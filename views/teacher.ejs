@@ -1,0 +1,44 @@
+<%- include layouts/header.ejs %>
+<div class="container">
+    <ul class="nav">
+        <li class="nav-item">
+            <a class="nav-link" href="#">
+                <%= name %>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/tasks/new/<%= id %>">Add Task</a>
+        </li>
+        <li class="nav-item justify-content-end">
+            <a class="nav-link" href="/logout">Logout</a>
+        </li>
+    </ul>
+</div>
+<div class="container">
+    <% if (tasks) { %>
+    <table>
+        <tr>
+            <th>Task</th>
+            <th>Deadline</th>
+        </tr>
+        <% tasks.forEach(function(task){ %>
+        <tr>
+            <td>
+                <%= task.text %>
+            </td>
+            <td>
+                <%= task.deadline %>
+            </td>
+            <td>
+                <a href="/tasks/edit/<%= task.task_id %>">Edit</a>
+            </td>
+            <td>
+                <a href="/tasks/delete/<%= task.task_id %>">Delete</a>
+            </td>
+            <br>
+        </tr>
+        <% }) %>
+    </table>
+    <% } %>
+</div>
+<%- include layouts/footer.ejs %>

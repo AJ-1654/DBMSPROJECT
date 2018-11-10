@@ -1,0 +1,22 @@
+<%- include layouts/header.ejs %>
+<div class="container">
+    <form action="/tasks/update/<%= task_id %>" method="post" name="task-form">
+        <div class="form-group">
+            <label for="teacher_id">Teacher_id</label>
+            <input type="text" name="teacher_id" class="form-control" id="teacher_id" value="<%= teacher_id %>">
+        </div>
+        <div class="form-group">
+            <label for="text">Task</label>
+            <textarea  name="text" class="form-control" id="text"> <%= text %></textarea>
+        </div>
+        <div class="form-group">
+            <label for="date">Date of Submission</label>
+            <input type="date" name="dos" class="form-control" id="date">
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+    <form action="/tasks/back/<%= teacher_id %>" method="post" name="task-form">
+        <button type="submit" class="btn btn-primary">Back</button>
+    </form>
+</div>
+<%- include layouts/footer.ejs %>
