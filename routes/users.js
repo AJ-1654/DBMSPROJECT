@@ -33,6 +33,12 @@ router.post('/login', function (req, res, next) {
                   text: "Userid and password does not match"
                 });
               }
+            } else {
+              res.render('error', {
+                title: "error",
+                code: 204,
+                text: "Userid and password does not match"
+              });
             }
           }
         });
@@ -52,6 +58,12 @@ router.post('/login', function (req, res, next) {
                 var r = "/teacher/" + teacher_id;
                 console.log('redirecting');
                 res.redirect(r);
+              } else {
+                res.render('error', {
+                  title: "error",
+                  code: 204,
+                  text: "Userid and password does not match"
+                });
               }
             } else {
               res.render('error', {
