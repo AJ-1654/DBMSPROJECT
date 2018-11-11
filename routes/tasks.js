@@ -21,7 +21,6 @@ router.post('/add', function (req, res, next) {
             deadline: req.body.dos,
             teacher_id: req.body.teacher_id
         };
-        console.log(task.deadline);
         req.getConnection(function (error, conn) {
             conn.query('INSERT INTO tasks SET ?', task, function (err, result) {
                 if (err) {
@@ -33,13 +32,19 @@ router.post('/add', function (req, res, next) {
                         teacher_id: req.body.teacher_id
                     });
                 } else {
-                    console.log('adding new task');
                     req.flash('success', 'Data added successfully!');
                     var r = "/teacher/" + task.teacher_id;
                     console.log('redirecting');
                     res.redirect(r);
                 }
             });
+        });
+    } else {
+        res.render('taskForm', {
+            title: "Add Task",
+            teacher_id: req.body.teacher_id,
+            text: req.body.text,
+            deadline: req.body.dos
         });
     }
 });
@@ -69,7 +74,7 @@ router.get('/delete/:id', function (req, res) {
     };
     var teacher_id;
     req.getConnection(function (error, conn) {
-        conn.query('SELECT * FROM tasks where task_id = ?', [req.params.id], function(err,result){
+        conn.query('SELECT * FROM tasks where task_id = ?', [req.params.id], function (err, result) {
             teacher_id = result[0].teacher_id;
         });
         conn.query('DELETE FROM tasks WHERE task_id = ' + req.params.id, task, function (err, result) {
@@ -83,19 +88,31 @@ router.get('/delete/:id', function (req, res) {
 
 router.post('/update/:id', function (req, res) {
     console.log('inside update');
+    req.assert('teacher_id', 'Teacher_id is required').notEmpty();
+    req.assert('text', 'Text is required').notEmpty();
+    req.assert('dos', 'Date of Submission is required').notEmpty();
+    var errors = req.validationErrors();
     var task = {
         text: req.body.text,
         deadline: req.body.dos,
         teacher_id: req.body.teacher_id
     };
-    req.getConnection(function (error, conn) {
-        conn.query('UPDATE tasks SET ? WHERE task_id = ' + req.params.id, task, function (err, result) {
-            console.log('success', 'Data updated successfully!');
-            var r = "/teacher/" + task.teacher_id;
-            console.log('redirecting');
-            res.redirect(r);
+    if (!errors) {
+        req.getConnection(function (error, conn) {
+            conn.query('UPDATE tasks SET ? WHERE task_id = ' + req.params.id, task, function (err, result) {
+                console.log('success', 'Data updated successfully!');
+                var r = "/teacher/" + task.teacher_id;
+                console.log('redirecting');
+                res.redirect(r);
+            });
         });
-    });
+    } else {
+        console.log('inside error of updates');
+        console.log(task.text);
+        var id = req.params.id;
+        var r = '/tasks/edit/' + id;
+        res.redirect(r);
+    }
 });
 
 module.exports = router;
